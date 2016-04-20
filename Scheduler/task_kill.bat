@@ -1,0 +1,1 @@
+schtasks /Delete /TN "ci_gazik"
