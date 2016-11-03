@@ -1,27 +1,20 @@
 #!/bin/sh
 ResFile="$0.res"
-CurrentDir="$1" || ""
+CurrentDir=$(pwd)
 echo $'\n\n----' >> "${ResFile}"
 set -o pipefail
 set -uC
 ( (
 	set -ex
-	source "${CurrentDir}./zConfig.sh"
-	WorkDir="${CurrentDir}${WorkDir}";
+	source "${CurrentDir}/zConfig.sh"
+	WorkDir="${CurrentDir}/${WorkDir}";
 	cd "${WorkDir}"
-	pwd
-	FetchCmd="git fetch --prune --all"
-	time ${FetchCmd} ||
-	(
-		ExitCode=0
-		${FetchCmd} ||
-		ExitCode=$?
+		pwd
+		FetchCmd="git fetch --prune --all"
+		eval "${FetchCmd}" 
 
-		git rev-parse "${TargetBranch}" | echo > "${RepoVersionFile}"
-		
-		exit ${ExitCode}
-	) ; (exit $?) || false
-
+		eval "git rev-parse ${TargetBranch}" >| "${CurrentDir}/${RepoVersionFile}"
+	cd "${CurrentDir}"
   )
 	ExitCode=$?
 	(exit ${ExitCode}) && echo 'Success' || echo "Error / ExitCode = $?"

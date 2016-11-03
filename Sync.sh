@@ -10,10 +10,11 @@ set -uC
     date
   	pwd
     
-    source "./Fetch.sh"
-    source "./Deliver.sh"
+    ./Fetch.sh
+    ./Deploy.sh
   )
 )
+  ExitCode=$?
   exit ${ExitCode}
  2>&1 | tee -a "${ResFile}"
 

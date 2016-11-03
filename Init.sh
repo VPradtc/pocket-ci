@@ -9,14 +9,12 @@ set -ex
 	pwd
 	source './zConfig.sh'
 
-    source './PasswordCache.sh'
-
-	echo $'0' > "${RepoVersionFile}"
-	echo $'0' > "${ServerVersionFile}"
+	echo '0' > "${RepoVersionFile}" || true
+	echo '0' > "${ServerVersionFile}" || true
 )
 
 ExitCode=$?
-exit ${ExitCode}) && echo 'Success' || echo "Error / ExitCode = $?"
+exit ${ExitCode} && echo 'Success' || echo "Error / ExitCode = $?"
   
 exit ${ExitCode}
  2>&1 | tee -a "${ResFile}"
