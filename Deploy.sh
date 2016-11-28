@@ -26,6 +26,7 @@ set -uC
 	else (
 
 			cd "${WorkDir}"
+			set -ex 
 			(
 
 				ProjectFileFilter=".*\.\(csproj\)"
@@ -36,8 +37,10 @@ set -uC
 
 				git checkout -q "${CiBranch}"
 				git reset --hard "${TargetBranch}"
-
-				ProjectPath=$(find ./ -type f -name ${ProjectName} | xargs realpath | xargs cygpath -m)
+				
+				InvalidPath="*/obj/*"
+				
+				ProjectPath=$(find ./ -type f -not -path ${InvalidPath}  -name ${ProjectName} | xargs realpath | xargs cygpath -m)
 
 				eval "\"${MSBuildPath}\" \"${ProjectPath}\" ${BuildParams}"
 			) && (
@@ -52,9 +55,9 @@ set -uC
 
 				cp -R "${TmpDir}/." "${PublishDir}"
 
+			) && (
+				git rev-parse "${CiBranch}" >| "${CurrentDir}/${ServerVersionFile}"
 			)
-
-			git rev-parse "${CiBranch}" >| "${CurrentDir}/${ServerVersionFile}"
 		)
 	fi
 	ExitCode=$?
