@@ -40,8 +40,12 @@ set -uC
 				
 				InvalidPath="*/obj/*"
 				
-				ProjectPath=$(find ./ -type f -not -path ${InvalidPath}  -name ${ProjectName} | xargs realpath | xargs cygpath -m)
+				ProjectPath=$(find ./ -type f -not -path "${InvalidPath}"  -name "${ProjectName}" | xargs realpath | xargs cygpath -m)
 
+				SolutionDir=$(pwd | xargs realpath)
+				NugetRestoreCmd="\"${NugetPath}\" restore \"${SolutionDir}/${SolutionName}\""
+
+				eval "${NugetRestoreCmd}"
 				eval "\"${MSBuildPath}\" \"${ProjectPath}\" ${BuildParams}"
 			) && (
 
